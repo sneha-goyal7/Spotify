@@ -62,15 +62,13 @@ async function getSongs(folder) {
 }
 
 const playMusic = (track, pause = false) => {
-    currentSong.src = `/${currFolder}/` + track
+    currentSong.src = `${currFolder}/` + track
     if (!pause) {
         currentSong.play()
         play.src = "img/pause.svg"
     }
     document.querySelector(".songinfo").innerHTML = decodeURI(track)
     document.querySelector(".songtime").innerHTML = "00:00 / 00:00"
-
-
 }
 
 async function displayAlbums() {
@@ -82,10 +80,13 @@ async function displayAlbums() {
     let anchors = div.getElementsByTagName("a")
     let cardContainer = document.querySelector(".cardContainer")
     let array = Array.from(anchors)
+    console.log("Album folders found:", array.map(a => a.href))
     for (let index = 0; index < array.length; index++) {
         const e = array[index]; 
-        if (e.href.includes("/songs") && !e.href.includes(".htaccess")) {
-            let folder = e.href.split("/").slice(-2)[0]
+        // if (e.href.includes("/songs") && !e.href.includes(".htaccess")) {
+        if (e.href.includes("/songs/") && !e.href.endsWith("/songs/") && !e.href.includes(".htaccess")) {
+            // let folder = e.href.split("/").slice(-2)[0]
+            let folder = e.href.replace(/\/$/, "").split("/").pop()
             // Get the metadata of the folder
             let a = await fetch(`songs/${folder}/info.json`)
             let response = await a.json(); 
@@ -207,11 +208,6 @@ async function main() {
         }
 
     })
-
-
-
-
-
 }
 
 main() 
